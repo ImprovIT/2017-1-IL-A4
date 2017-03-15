@@ -29,10 +29,7 @@ namespace IntechCode.IntechCollection
 
         public void Add(T item)
         {
-            if (NeedToExpandArray())
-                ExpandArray();
-            this._array[_currentIndex] = item;
-            this._currentIndex++;
+            Insert(this.Count, item);
         }
 
         public int IndexOf(T item)
@@ -65,10 +62,13 @@ namespace IntechCode.IntechCollection
 
         public void RemoveAt(int index)
         {
-            //TO DO
             if (index <= this.Count)
             {
-                this._array[index] = default(T);
+                for (int i = index; i<this._currentIndex-1; i++)
+                {
+                    this._array[i] = this._array[i+1];
+                }
+                this._currentIndex--;              
             }
         }
 
@@ -79,7 +79,7 @@ namespace IntechCode.IntechCollection
 
         private void ExpandArray()
         {
-            T[] tmpArray = new T[this._array.Length * + 1];
+            T[] tmpArray = new T[this._array.Length * 2];
             for(int i = 0; i<this._array.Length; i++)
             {
                 tmpArray[i] = this._array[i];
