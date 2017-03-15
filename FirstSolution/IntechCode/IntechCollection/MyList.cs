@@ -70,17 +70,26 @@ namespace IntechCode.IntechCollection
 
         class E : IMyEnumerator<T>
         {
-            public T Current => throw new NotImplementedException();
+            readonly MyList<T> _list;
+            int _currentIndex;
+
+            public E( MyList<T> theList )
+            {
+                _list = theList;
+                _currentIndex = -1;
+            }
+
+            public T Current => _list._items[_currentIndex];
 
             public bool MoveNext()
             {
-                throw new NotImplementedException();
+                return ++_currentIndex < _list._count;
             }
         }
 
         public IMyEnumerator<T> GetEnumerator()
         {
-            return new E();
+            return new E( this );
         }
 
     }
