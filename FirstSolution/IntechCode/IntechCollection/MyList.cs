@@ -4,39 +4,63 @@ namespace IntechCode.IntechCollection
 {
     public class MyList<T> : IMyList<T>
     {
-        private int _sizeArray = 5;
-        private T[] _array;
-        private int _currentIndex;
+        T[] _items;
+        int _count;
 
         public MyList()
         {
-            this._array = new T[this._sizeArray];
-            this._currentIndex = 0;
-        }
-        public MyList(int sizeArray)
-        {
-            this._array = new T[sizeArray];
-            this._currentIndex = 0;
+            _items = new T[16];
         }
 
         public T this[int index] 
         {
-            get => this._array[index];
-            set => this._array[index] = value;
+            get
+            {
+                if (index >= _count) throw new IndexOutOfRangeException();
+                return _items[index];
+            }
+            set
+            {
+                if (index >= _count) throw new IndexOutOfRangeException();
+                _items[index] = value;
+            }
         }
 
-        public int Count => this._currentIndex;
+        public int Count => _count;
 
-        public void Add(T item)
+        public void Add(T item) => Insert(_count, item);
+
+        public void Insert(int index, T item)
         {
-            Insert(this.Count, item);
+            if (index < 0 || index > _count) throw new IndexOutOfRangeException();
+            if (_count == _items.Length)
+            {
+                // Realloc needed.
+                T[] newItems = new T[ _items.Length * 2];
+                Array.Copy(_items, 0, newItems, 0, _count);
+                _items = newItems;
+            }
+            if (index == _count) _items[_count] = item;
+            else
+            {
+                Array.Copy(_items, index, _items, index + 1, _count - index);
+                _items[index] = item;
+            }
+            ++_count;
+        }
+
+        public void RemoveAt(int index)
+        {
+            if (index < 0 || index >= _count) throw new IndexOutOfRangeException();
+            Array.Copy(_items, index+1, _items, index, _count - index -1);
+            _items[--_count] = default(T);
         }
 
         public int IndexOf(T item)
         {
-            for(int i=0; i < this._currentIndex - 1; i++)
+            for( int i = 0; i < _count; ++i)
             {
-                if (item.Equals(this._array[i]))
+                if (System.Collections.Generic.EqualityComparer<T>.Default.Equals(item, _items[i]))
                 {
                     return i;
                 }
@@ -44,47 +68,20 @@ namespace IntechCode.IntechCollection
             return -1;
         }
 
-        public void Insert(int index, T item)
+        class E : IMyEnumerator<T>
         {
-            if(index <= this.Count)
-            {
-                if (NeedToExpandArray())
-                    ExpandArray();
-                for (int i = this._currentIndex; i > index; i--)
-                {
-                    this._array[i + 1] = this._array[i];
-                }
-                this._array[index] = item;
-                this._currentIndex++;
-            }
-            //throw exception
-        }
+            public T Current => throw new NotImplementedException();
 
-        public void RemoveAt(int index)
-        {
-            if (index <= this.Count)
+            public bool MoveNext()
             {
-                for (int i = index; i<this._currentIndex-1; i++)
-                {
-                    this._array[i] = this._array[i+1];
-                }
-                this._currentIndex--;              
+                throw new NotImplementedException();
             }
         }
 
-        private bool NeedToExpandArray()
+        public IMyEnumerator<T> GetEnumerator()
         {
-            return this._currentIndex+1 == this._array.Length;
+            return new E();
         }
 
-        private void ExpandArray()
-        {
-            T[] tmpArray = new T[this._array.Length * 2];
-            for(int i = 0; i<this._array.Length; i++)
-            {
-                tmpArray[i] = this._array[i];
-            }
-            this._array = tmpArray;
-        }
     }
 }

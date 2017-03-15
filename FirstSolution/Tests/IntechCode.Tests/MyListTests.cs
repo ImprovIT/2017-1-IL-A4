@@ -1,4 +1,6 @@
+
 ﻿using IntechCode.IntechCollection;
+﻿using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -67,6 +69,18 @@ namespace IntechCode.Tests
             var myList = new MyList<int>();
             int index = myList.IndexOf(5);
             Assert.Equal(index, -1);
+        }
+        public void MyList_supports_foreach()
+        {
+            var l = new MyList<int>();
+            l.Add(3712);
+            int nbTurn = 0;
+            foreach( var item in l )
+            {
+                ++nbTurn;
+                item.Should().Be(3712);
+            }
+            nbTurn.Should().Be(1);
         }
     }
 }

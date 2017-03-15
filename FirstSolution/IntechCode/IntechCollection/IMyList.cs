@@ -2,7 +2,7 @@
 
 namespace IntechCode.IntechCollection
 {
-    public interface IMyList<T>
+    public interface IMyList<T> : IMyEnumerable<T>
     {
         void Add( T item );
 
