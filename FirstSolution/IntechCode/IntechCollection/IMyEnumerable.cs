@@ -4,7 +4,7 @@ using System.Text;
 
 namespace IntechCode.IntechCollection
 {
-    public interface IMyEnumerable<T>
+    public interface IMyEnumerable<out T>
     {
         IMyEnumerator<T> GetEnumerator();
     }
