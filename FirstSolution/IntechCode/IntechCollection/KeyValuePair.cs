@@ -4,12 +4,12 @@ using System.Text;
 
 namespace IntechCode.IntechCollection
 {
-    public struct KeyValuePair<Tkey, TValue>
+    public struct KeyValuePair<TKey, TValue>
     {
-        public readonly Tkey key;
+        public readonly TKey key;
         public readonly TValue value;
 
-        public KeyValuePair(Tkey k, TValue v)
+        public KeyValuePair(TKey k, TValue v)
         {
             key = k;
             value = v;
