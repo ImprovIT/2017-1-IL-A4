@@ -45,7 +45,7 @@ namespace IntechCode.IntechCollection
             Debug.Assert(head != null);
             do
             {
-                if (EqualityComparer<TKey>.Default.Equals(key, head.Data.Key)) break;
+                if (EqualityComparer<TKey>.Default.Equals(key, head.Data.key)) break;
                 head = head.Next;
             }
             while (head != null);
