@@ -9,7 +9,7 @@ namespace IntechCode.IntechCollection
         public readonly TKey key;
         public readonly TValue value;
 
-        public KeyValuePair(TKey k, TValue v)
+        public KeyValuePair( TKey k, TValue v )
         {
             key = k;
             value = v;

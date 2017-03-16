@@ -7,33 +7,30 @@ namespace IntechCode.IntechCollection
 {
     public class MyDictionary<TKey, TValue> : IMyDictionary<TKey, TValue>
     {
-
-        public class Node
+        class Node
         {
             public KeyValuePair<TKey, TValue> Data;
             public Node Next;
         }
-
-        public Node[] _buckets;
-        public int _count;
+        Node[] _buckets;
+        int _count;
 
         public MyDictionary()
         {
             _buckets = new Node[7];
-            _count = 0;
         }
 
-        public TValue this[TKey key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public TValue this[TKey key] => throw new NotImplementedException();
 
         public int Count => _count;
 
         public void Add(TKey key, TValue value)
         {
-            int idxBucket = key.GetHashCode() % _buckets.Length;
+            int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
             Node head = _buckets[idxBucket];
-            if(head != null && FindIn(head, key) != null)
+            if (head != null && FindIn(head, key) != null )
             {
-                throw new Exception("Duplicated key");
+                throw new Exception("Duplicate key.");
             }
             _buckets[idxBucket] = new Node()
             {
@@ -43,12 +40,12 @@ namespace IntechCode.IntechCollection
             ++_count;
         }
 
-         object FindIn(Node head, TKey key)
+        object FindIn(Node head, TKey key)
         {
             Debug.Assert(head != null);
             do
             {
-                if (EqualityComparer<TKey>.Default.Equals(key, head.Data.key)) break;
+                if (EqualityComparer<TKey>.Default.Equals(key, head.Data.Key)) break;
                 head = head.Next;
             }
             while (head != null);
