@@ -4,7 +4,7 @@ using System.Text;
 
 namespace IntechCode.IntechCollection
 {
-    public interface IMyDictionary<TKey,TValue>
+    public interface IMyDictionary<TKey,TValue> : IMyEnumerable<KeyValuePair<TKey, TValue>>
     {
         /// <summary>
         /// Add e key-value pair. The key must not already exist.
