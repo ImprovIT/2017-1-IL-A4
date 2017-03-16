@@ -4,9 +4,7 @@ using System.Text;
 
 namespace IntechCode.IntechCollection
 {
-    public interface IMyReadOnlyList<out T> : IMyReadOnlyCollection<T>
+    public interface IMyDictionary
     {
-        T this[int index] { get; }
-
     }
 }
