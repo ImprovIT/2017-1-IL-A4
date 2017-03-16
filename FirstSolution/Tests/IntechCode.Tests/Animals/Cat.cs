@@ -4,8 +4,8 @@ using System.Text;
 
 namespace IntechCode.Tests.Animals
 {
-    class Cat: Animal
+    class Cat : Animal
     {
-        public override sealed string Shout() => "Miaou"; //sealed permet de verouiller
+        public override sealed string Shout() => "Meeeoww";
     }
 }
