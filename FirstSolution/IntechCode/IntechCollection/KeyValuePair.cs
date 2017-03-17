@@ -7,7 +7,7 @@ namespace IntechCode.IntechCollection
     public struct KeyValuePair<TKey, TValue>
     {
         public readonly TKey Key;
-        public readonly TValue Value;
+        public TValue Value;
 
         public KeyValuePair(TKey k, TValue v )
         {
