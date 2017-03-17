@@ -36,20 +36,7 @@ namespace IntechCode.IntechCollection
                 if (FindIn(head, key) == null) throw new KeyNotFoundException("Clé invalide.");
                 return head.Data.Value;
             }
-            set
-            {
-                int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
-                Node head = _buckets[idxBucket];
-                if (head != null)
-                {
-                    do
-                    {
-                        if (EqualityComparer<TKey>.Default.Equals(key, head.Data.Key)) head.Data.Value = value;
-                    }
-                    while (head != null);
-                    throw new KeyNotFoundException("Clé invalide.");
-                }
-            }
+            set => DoAdd(key, value, true);
         }
 
 
