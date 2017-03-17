@@ -112,7 +112,7 @@ namespace IntechCode.IntechCollection
                         _currentKvp = _currentNode.Data;
                         return true;
                     }
-                    while (_currentNode.Next != null)
+                    if (_currentNode.Next != null)
                     {
                         _currentNode = _currentNode.Next;
                         _currentKvp = _currentNode.Data;
