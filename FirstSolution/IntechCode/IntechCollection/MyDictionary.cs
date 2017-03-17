@@ -51,9 +51,9 @@ namespace IntechCode.IntechCollection
         {
             int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
             Node head = _buckets[idxBucket];
-            if (head != null && FindIn(head, key) != null )
+            if (head != null && FindIn(head, key) != null)
             {
-                if(allowUpdate)
+                if (allowUpdate)
                 {
                     head.Data = new KeyValuePair<TKey, TValue>(head.Data.Key, value);
                     return;
@@ -92,15 +92,42 @@ namespace IntechCode.IntechCollection
         {
 
             readonly MyDictionary<TKey, TValue> _dictionnary;
+            Node _currentNode;
+            KeyValuePair<TKey, TValue> _currentKvp;
+            int _currentIndex;
 
             public E(MyDictionary<TKey, TValue> theDictionnary)
             {
                 _dictionnary = theDictionnary;
+                _currentIndex = 0;
             }
-            public KeyValuePair<TKey, TValue> Current => throw new NotImplementedException();
+            public KeyValuePair<TKey, TValue> Current => _currentKvp;
 
             public bool MoveNext()
             {
+                if (_currentIndex < _dictionnary._buckets.Length)
+                {
+                    if (_currentNode == null)
+                    {
+                        _currentNode = _dictionnary._buckets[_currentIndex];
+                        _currentKvp = _currentNode.Data;
+                        return true;
+                    }
+                    while (_currentNode.Next != null)
+                    {
+                        _currentNode = _currentNode.Next;
+                        _currentKvp = _currentNode.Data;
+                        return true;
+                    }
+                    _currentNode = null;
+                    ++_currentIndex;
+                    if (_dictionnary._buckets[_currentIndex] != null)
+                    {
+                        _currentNode = _dictionnary._buckets[_currentIndex];
+                        _currentKvp = _currentNode.Data;
+                        return true;
+                    }
+                }
                 return false;
             }
         }
