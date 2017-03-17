@@ -31,9 +31,16 @@ namespace IntechCode.IntechCollection
         {
             get
             {
+<<<<<<< HEAD
+                int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
+                Node head = _buckets[idxBucket];
+                if (FindIn(head, key) == null) throw new KeyNotFoundException("Clé invalide.");
+                return head.Data.Value;
+=======
                 TValue found;
                 if (TryGetValue(key, out found)) return found;
                 throw new KeyNotFoundException();
+>>>>>>> originSpi/master
             }
             set => DoAdd(key, value, true);
         }
@@ -50,8 +57,12 @@ namespace IntechCode.IntechCollection
         {
             int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
             Node head = _buckets[idxBucket];
+<<<<<<< HEAD
+            if (head != null && FindIn(head, key) != null)
+=======
             Node found;
             if (head != null && (found = FindIn(head, key)) != null)
+>>>>>>> originSpi/master
             {
                 if (allowUpdate)
                 {
@@ -84,7 +95,8 @@ namespace IntechCode.IntechCollection
         {
             int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
             Node head = _buckets[idxBucket];
-            return head != null ? FindIn(head, key) != null : false;
+            if (head == null) throw new KeyNotFoundException("Clé invalide");
+            return FindIn(head, key) != null;
         }
 
         class E : IMyEnumerator<KeyValuePair<TKey, TValue>>
@@ -104,22 +116,25 @@ namespace IntechCode.IntechCollection
 
             public bool MoveNext()
             {
-                while (_currentIndex < _dictionnary._buckets.Length && _dictionnary._buckets[_currentIndex] != null)
+                if (_currentIndex < _dictionnary._buckets.Length)
                 {
-                    if (_currentNode == null)
+                    while (_dictionnary._buckets[_currentIndex] != null)
                     {
-                        _currentNode = _dictionnary._buckets[_currentIndex];
-                        _currentKvp = _currentNode.Data;
-                        return true;
+                        if (_currentNode == null)
+                        {
+                            _currentNode = _dictionnary._buckets[_currentIndex];
+                            _currentKvp = _currentNode.Data;
+                            return true;
+                        }
+                        while (_currentNode.Next != null)
+                        {
+                            _currentNode = _currentNode.Next;
+                            _currentKvp = _currentNode.Data;
+                            return true;
+                        }
+                        _currentNode = null;
+                        ++_currentIndex;
                     }
-                    while (_currentNode.Next != null)
-                    {
-                        _currentNode = _currentNode.Next;
-                        _currentKvp = _currentNode.Data;
-                        return true;
-                    }
-                    _currentNode = null;
-                    ++_currentIndex;
                 }
                 return false;
             }
