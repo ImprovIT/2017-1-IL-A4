@@ -20,7 +20,17 @@ namespace IntechCode.IntechCollection
             _buckets = new Node[7];
         }
 
-        public TValue this[TKey key] => throw new NotImplementedException();
+        public TValue this[TKey key]
+        {
+            get
+            {
+                int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
+                Node head = _buckets[idxBucket];
+                if (FindIn(head, key) == null) throw new KeyNotFoundException("Clé invalide.");
+                return head.Data.value;
+            }
+        }
+
 
         public int Count => _count;
 
@@ -28,14 +38,14 @@ namespace IntechCode.IntechCollection
         {
             int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
             Node head = _buckets[idxBucket];
-            if (head != null && FindIn(head, key) != null )
+            if (head != null && FindIn(head, key) != null)
             {
                 throw new Exception("Duplicate key.");
             }
             _buckets[idxBucket] = new Node()
             {
                 Data = new KeyValuePair<TKey, TValue>(key, value),
-                Next = head
+                Next = null
             };
             ++_count;
         }
@@ -54,17 +64,47 @@ namespace IntechCode.IntechCollection
 
         public bool ContainsKey(TKey key)
         {
-            throw new NotImplementedException();
+            int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
+            Node head = _buckets[idxBucket];
+            return FindIn(head, key) != null;
+        }
+
+        class E : IMyEnumerator<KeyValuePair<TKey, TValue>>
+        {
+
+            readonly MyDictionary<TKey, TValue> _dictionnary;
+            int _currentIndex;
+
+            public E(MyDictionary<TKey, TValue> theDictionnary)
+            {
+                _dictionnary = theDictionnary;
+            }
+            public KeyValuePair<TKey, TValue> Current => throw new NotImplementedException();
+
+            public bool MoveNext()
+            {
+                return false;
+            }
         }
 
         public IMyEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new E(this);
         }
 
         public bool Remove(TKey key)
         {
-            throw new NotImplementedException();
+            int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
+            Node head = _buckets[idxBucket];
+            if (head != null && FindIn(head, key) != null)
+            {
+                
+            }
+            else
+            {
+                throw new KeyNotFoundException("Clé invalide");
+            }
+            return false;    
         }
 
         public bool TryGetValue(TKey key, out TValue value)
