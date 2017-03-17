@@ -57,10 +57,20 @@ namespace IntechCode.IntechCollection
 
         public void Add(TKey key, TValue value)
         {
+            DoAdd(key, value, false);
+        }
+
+        private void DoAdd(TKey key, TValue value, bool allowUpdate)
+        {
             int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
             Node head = _buckets[idxBucket];
-            if (head != null && FindIn(head, key) != null)
+            if (head != null && FindIn(head, key) != null )
             {
+                if(allowUpdate)
+                {
+                    head.Data = new KeyValuePair<TKey, TValue>(head.Data.Key, value);
+                    return;
+                }
                 throw new Exception("Duplicate key.");
             }
             _buckets[idxBucket] = new Node()
