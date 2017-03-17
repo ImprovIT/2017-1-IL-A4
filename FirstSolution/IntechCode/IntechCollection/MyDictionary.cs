@@ -107,25 +107,22 @@ namespace IntechCode.IntechCollection
             {
                 if (_currentIndex < _dictionnary._buckets.Length)
                 {
-                    if (_currentNode == null)
+                    while (_dictionnary._buckets[_currentIndex] != null)
                     {
-                        _currentNode = _dictionnary._buckets[_currentIndex];
-                        _currentKvp = _currentNode.Data;
-                        return true;
-                    }
-                    while (_currentNode.Next != null)
-                    {
-                        _currentNode = _currentNode.Next;
-                        _currentKvp = _currentNode.Data;
-                        return true;
-                    }
-                    _currentNode = null;
-                    ++_currentIndex;
-                    if (_dictionnary._buckets[_currentIndex] != null)
-                    {
-                        _currentNode = _dictionnary._buckets[_currentIndex];
-                        _currentKvp = _currentNode.Data;
-                        return true;
+                        if (_currentNode == null)
+                        {
+                            _currentNode = _dictionnary._buckets[_currentIndex];
+                            _currentKvp = _currentNode.Data;
+                            return true;
+                        }
+                        while (_currentNode.Next != null)
+                        {
+                            _currentNode = _currentNode.Next;
+                            _currentKvp = _currentNode.Data;
+                            return true;
+                        }
+                        _currentNode = null;
+                        ++_currentIndex;
                     }
                 }
                 return false;
