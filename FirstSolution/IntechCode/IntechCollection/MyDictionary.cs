@@ -7,7 +7,7 @@ namespace IntechCode.IntechCollection
 {
     public class MyDictionary<TKey, TValue> : IMyDictionary<TKey, TValue>
     {
-        static readonly int[] _primes = {
+         static readonly int[] _primes = {
             3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
             1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
             17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
@@ -24,7 +24,7 @@ namespace IntechCode.IntechCollection
 
         public MyDictionary()
         {
-            _buckets = new Node[1];
+            _buckets = new Node[7];
         }
 
         public TValue this[TKey key]
@@ -37,7 +37,6 @@ namespace IntechCode.IntechCollection
             }
             set => DoAdd(key, value, true);
         }
-
 
         public int Count => _count;
 
@@ -53,7 +52,7 @@ namespace IntechCode.IntechCollection
             Node found;
             if (head != null && (found = FindIn(head, key)) != null)
             {
-                if (allowUpdate)
+                if(allowUpdate)
                 {
                     found.Data = new KeyValuePair<TKey, TValue>(found.Data.Key, value);
                     return;
@@ -87,59 +86,9 @@ namespace IntechCode.IntechCollection
             return head != null ? FindIn(head, key) != null : false;
         }
 
-        class E : IMyEnumerator<KeyValuePair<TKey, TValue>>
-        {
-
-            readonly MyDictionary<TKey, TValue> _dictionnary;
-            Node _currentNode;
-            int _currentIndex;
-
-            public E(MyDictionary<TKey, TValue> theDictionnary)
-            {
-                _dictionnary = theDictionnary;
-                _currentIndex = 0;
-            }
-            public KeyValuePair<TKey, TValue> Current => _currentNode.Data;
-
-            public bool MoveNext()
-            {
-                while (_currentIndex < _dictionnary._buckets.Length && _dictionnary._buckets[_currentIndex] != null)
-                {
-                    if (_currentNode == null)
-                    {
-                        _currentNode = _dictionnary._buckets[_currentIndex];
-                        return true;
-                    }
-                    if (_currentNode.Next != null)
-                    {
-                        _currentNode = _currentNode.Next;
-                        return true;
-                    }
-                    _currentNode = null;
-                    ++_currentIndex;
-                }
-                return false;
-            }
-        }
-
-        public IMyEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
-        {
-            return new E(this);
-        }
-
         public bool Remove(TKey key)
         {
-            int idxBucket = Math.Abs(key.GetHashCode()) % _buckets.Length;
-            Node head = _buckets[idxBucket];
-            if (head != null && FindIn(head, key) != null)
-            {
-
-            }
-            else
-            {
-                throw new KeyNotFoundException("Clé invalide");
-            }
-            return false;
+            throw new NotImplementedException();
         }
 
         public bool TryGetValue(TKey key, out TValue value)
@@ -154,5 +103,44 @@ namespace IntechCode.IntechCollection
             value = n.Data.Value;
             return true;
         }
+
+        class E : IMyEnumerator<KeyValuePair<TKey,TValue>>
+        {
+            readonly MyDictionary<TKey,TValue> _dictionnary;
+            Node _currentNode;
+            int _currentIndex;
+
+            public E(MyDictionary<TKey, TValue> theDict)
+            {
+                _dictionnary = theDict;
+                _currentIndex = -1;
+            }
+
+            public KeyValuePair<TKey, TValue> Current  => _currentNode.Data;
+
+            public bool MoveNext()
+            {
+                if( _currentNode != null && _currentNode.Next != null)
+                {
+                    _currentNode = _currentNode.Next;
+                    return true;
+                }
+                while (++_currentIndex < _dictionnary._buckets.Length)
+                {
+                    if (_dictionnary._buckets[_currentIndex] != null)
+                    {
+                        _currentNode = _dictionnary._buckets[_currentIndex];
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        public IMyEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        {
+            return new E(this);
+        }
+
     }
 }
