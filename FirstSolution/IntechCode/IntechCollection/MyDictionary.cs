@@ -36,6 +36,7 @@ namespace IntechCode.IntechCollection
                 if (FindIn(head, key) == null) throw new KeyNotFoundException("Clé invalide.");
                 return head.Data.Value;
             }
+            set => throw new NotImplementedException();
         }
 
 
@@ -57,7 +58,7 @@ namespace IntechCode.IntechCollection
             ++_count;
         }
 
-        object FindIn(Node head, TKey key)
+        Node FindIn(Node head, TKey key)
         {
             Debug.Assert(head != null);
             do
