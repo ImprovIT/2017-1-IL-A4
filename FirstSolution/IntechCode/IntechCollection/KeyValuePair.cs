@@ -6,13 +6,13 @@ namespace IntechCode.IntechCollection
 {
     public struct KeyValuePair<TKey, TValue>
     {
-        public readonly TKey key;
-        public readonly TValue value;
+        public readonly TKey Key;
+        public readonly TValue Value;
 
         public KeyValuePair(TKey k, TValue v )
         {
-            key = k;
-            value = v;
+            Key = k;
+            Value = v;
         }
     }
 }
