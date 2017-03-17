@@ -92,7 +92,6 @@ namespace IntechCode.IntechCollection
 
             readonly MyDictionary<TKey, TValue> _dictionnary;
             Node _currentNode;
-            KeyValuePair<TKey, TValue> _currentKvp;
             int _currentIndex;
 
             public E(MyDictionary<TKey, TValue> theDictionnary)
@@ -100,7 +99,7 @@ namespace IntechCode.IntechCollection
                 _dictionnary = theDictionnary;
                 _currentIndex = 0;
             }
-            public KeyValuePair<TKey, TValue> Current => _currentKvp;
+            public KeyValuePair<TKey, TValue> Current => _currentNode.Data;
 
             public bool MoveNext()
             {
@@ -109,13 +108,11 @@ namespace IntechCode.IntechCollection
                     if (_currentNode == null)
                     {
                         _currentNode = _dictionnary._buckets[_currentIndex];
-                        _currentKvp = _currentNode.Data;
                         return true;
                     }
                     if (_currentNode.Next != null)
                     {
                         _currentNode = _currentNode.Next;
-                        _currentKvp = _currentNode.Data;
                         return true;
                     }
                     _currentNode = null;
