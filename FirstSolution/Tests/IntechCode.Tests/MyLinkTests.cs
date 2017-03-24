@@ -3,6 +3,7 @@ using IntechCode.IntechCollection;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Xunit;
 
@@ -29,12 +30,23 @@ namespace IntechCode.Tests
             Func<int, bool> filter = num => (num & 1) != 0;
 
             var allOdds = list.Where(filter);
-            var allPositiveOdds = allOdds.Where( i => i >= 0 );
+            var allPositiveOdds = allOdds.Where(i => i >= 0);
 
             allPositiveOdds.Count().Should().Be(2);
 
         }
 
+        [Test]
+        [Fact]
+        public void Fibo()
+        {
+            int num = 0;
+            foreach(var i in LinqHelpers.Fibonacci().Take(300))
+            {
+                i.Should().Be(LinqHelpers.Fibonacci(num));
+                ++num;
+            }
+        }
     }
 
     static class MyLinqDeFou
@@ -53,7 +65,7 @@ namespace IntechCode.Tests
             class E : IMyEnumerator<T>
             {
                 readonly IMyEnumerator<T> _source;
-                readonly Func<T,bool> _predicate;
+                readonly Func<T, bool> _predicate;
 
                 public E(En<T> e)
                 {
@@ -65,7 +77,7 @@ namespace IntechCode.Tests
 
                 public bool MoveNext()
                 {
-                    while(_source.MoveNext())
+                    while (_source.MoveNext())
                     {
                         if (_predicate(_source.Current)) return true;
                     }
@@ -88,7 +100,7 @@ namespace IntechCode.Tests
                 if (predicate(e)) yield return e;
         }
 
-        public static int Count<T>(this IMyEnumerable<T> @this )
+        public static int Count<T>(this IMyEnumerable<T> @this)
         {
             int i = 0;
             foreach (var e in @this) ++i;
