@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using IntechCode.IntechCollection;
+using IntechCode.LinqPlus;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace IntechCode.Tests
             Func<int, bool> filter = num => (num & 1) != 0;
 
             var allOdds = list.Where(filter);
-            var allPositiveOdds = allOdds.Where(i => i >= 0);
+            var allPositiveOdds = allOdds.Where( i => i >= 0 );
 
             allPositiveOdds.Count().Should().Be(2);
 
@@ -41,11 +42,21 @@ namespace IntechCode.Tests
         public void Fibo()
         {
             int num = 0;
-            foreach(var i in LinqHelpers.Fibonacci().Take(300))
+            foreach (var i in LinqHelpers.Fibonacci().Take(30))
             {
                 i.Should().Be(LinqHelpers.Fibonacci(num));
                 ++num;
             }
+        }
+
+        [TestCase(44)]
+        public void Fibo_recursive_performance( int n )
+        {
+            Console.WriteLine("---");
+            Console.WriteLine($"FibIterable({n}) = {LinqHelpers.Fibonacci().Skip(n).First()}");
+            Console.WriteLine("---");
+            Console.WriteLine($"FibRecurse({n}) = {LinqHelpers.Fibonacci(n)}");
+            Console.WriteLine("---");
         }
     }
 
@@ -65,7 +76,7 @@ namespace IntechCode.Tests
             class E : IMyEnumerator<T>
             {
                 readonly IMyEnumerator<T> _source;
-                readonly Func<T, bool> _predicate;
+                readonly Func<T,bool> _predicate;
 
                 public E(En<T> e)
                 {
@@ -77,7 +88,7 @@ namespace IntechCode.Tests
 
                 public bool MoveNext()
                 {
-                    while (_source.MoveNext())
+                    while(_source.MoveNext())
                     {
                         if (_predicate(_source.Current)) return true;
                     }
@@ -93,6 +104,16 @@ namespace IntechCode.Tests
             return new En<T>(@this, predicate);
         }
 
+        public static IMyEnumerable<G> Select<T, G>(this IMyEnumerable<T> @this, Func<T, G> f)
+        {
+            return null;
+        }
+
+        public static IEnumerable<G> YSelect<T, G>(this IMyEnumerable<T> @this, Func<T, G> f)
+        {
+            return null;
+        }
+
 
         public static IEnumerable<T> YWhere<T>(this IMyEnumerable<T> @this, Func<T, bool> predicate)
         {
@@ -100,12 +121,14 @@ namespace IntechCode.Tests
                 if (predicate(e)) yield return e;
         }
 
-        public static int Count<T>(this IMyEnumerable<T> @this)
+        public static int Count<T>(this IMyEnumerable<T> @this )
         {
             int i = 0;
             foreach (var e in @this) ++i;
             return i;
         }
+
+
     }
 
 
