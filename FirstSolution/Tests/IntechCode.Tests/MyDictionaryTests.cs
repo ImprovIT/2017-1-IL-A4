@@ -121,5 +121,41 @@ namespace IntechCode.Tests
             }
             return keys;
         }
+
+        [Test]
+        [Fact]
+        public void Remove_First_Node_From_Dictionary()
+        {
+            var d = new MyDictionary<string, int>();
+            d.Add("One", 1);
+            d.ContainsKey("One").Should().BeTrue();
+            d["One"].Should().Be(1);
+
+            d.Remove("One");
+            d.ContainsKey("One").Should().BeFalse();
+
+            d.Count.Should().Be(0);
+        }
+
+        [Test]
+        [Fact]
+        public void Remove_Random_Node_From_Dictionary()
+        {
+            var d = new MyDictionary<string, int>();
+            d.Add("One", 1);
+            d.Add("Two", 2);
+            d.Add("Three", 3);
+            d.Add("Four", 4);
+            d.Add("Five", 5);
+            d.ContainsKey("Three").Should().BeTrue();
+            d["Three"].Should().Be(3);
+
+            d.Count.Should().Be(5);
+
+            d.Remove("Three");
+            d.ContainsKey("Three").Should().BeFalse();
+
+            d.Count.Should().Be(4);
+        }
     }
 }

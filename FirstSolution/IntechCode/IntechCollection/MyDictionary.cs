@@ -7,7 +7,7 @@ namespace IntechCode.IntechCollection
 {
     public class MyDictionary<TKey, TValue> : IMyDictionary<TKey, TValue>
     {
-         static readonly int[] _primes = {
+        static readonly int[] _primes = {
             3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
             1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
             17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
@@ -21,9 +21,11 @@ namespace IntechCode.IntechCollection
         }
         Node[] _buckets;
         int _count;
+        readonly Func<TKey, TKey, bool> _equality;
 
-        public MyDictionary()
+        public MyDictionary(Func<TKey, TKey, bool> equality = null)
         {
+            _equality = equality ?? EqualityComparer<TKey>.Default.Equals;
             _buckets = new Node[7];
         }
 
@@ -52,7 +54,7 @@ namespace IntechCode.IntechCollection
             Node found;
             if (head != null && (found = FindIn(head, key)) != null)
             {
-                if(allowUpdate)
+                if (allowUpdate)
                 {
                     found.Data = new KeyValuePair<TKey, TValue>(found.Data.Key, value);
                     return;
@@ -72,7 +74,7 @@ namespace IntechCode.IntechCollection
             Debug.Assert(head != null);
             do
             {
-                if (EqualityComparer<TKey>.Default.Equals(key, head.Data.Key)) break;
+                if (_equality(key, head.Data.Key)) break;
                 head = head.Next;
             }
             while (head != null);
@@ -88,7 +90,37 @@ namespace IntechCode.IntechCollection
 
         public bool Remove(TKey key)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < _buckets.Length; i++)
+            {
+                Node head = _buckets[i];
+                Node previousNode = null;
+                do
+                {
+                    if (EqualityComparer<TKey>.Default.Equals(key, head.Data.Key))
+                    {
+                        if (previousNode == null)
+                        {
+                            if (head.Next != null)
+                            {
+                                _buckets[i] = head.Next;
+                            }
+                            else
+                            {
+                                _buckets[i] = null;
+                            }
+                            --_count;
+                            return true;
+                        }
+                        previousNode.Next = head.Next;
+                        --_count;
+                        return true;
+                    }
+                    previousNode = head;
+                    head = head.Next;
+                }
+                while (head != null);
+            }
+            return false;
         }
 
         public bool TryGetValue(TKey key, out TValue value)
@@ -104,9 +136,9 @@ namespace IntechCode.IntechCollection
             return true;
         }
 
-        class E : IMyEnumerator<KeyValuePair<TKey,TValue>>
+        class E : IMyEnumerator<KeyValuePair<TKey, TValue>>
         {
-            readonly MyDictionary<TKey,TValue> _dictionnary;
+            readonly MyDictionary<TKey, TValue> _dictionnary;
             Node _currentNode;
             int _currentIndex;
 
@@ -116,11 +148,11 @@ namespace IntechCode.IntechCollection
                 _currentIndex = -1;
             }
 
-            public KeyValuePair<TKey, TValue> Current  => _currentNode.Data;
+            public KeyValuePair<TKey, TValue> Current => _currentNode.Data;
 
             public bool MoveNext()
             {
-                if( _currentNode != null && _currentNode.Next != null)
+                if (_currentNode != null && _currentNode.Next != null)
                 {
                     _currentNode = _currentNode.Next;
                     return true;
