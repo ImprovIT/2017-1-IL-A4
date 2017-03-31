@@ -157,5 +157,10 @@ namespace IntechCode.Tests
 
             d.Count.Should().Be(4);
         }
+            }
+
+            public override int GetHashCode() => Name != null ? Name.GetHashCode() : 0;
+        }
+
     }
 }
