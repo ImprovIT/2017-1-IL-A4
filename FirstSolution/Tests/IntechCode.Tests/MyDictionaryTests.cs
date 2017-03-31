@@ -86,11 +86,11 @@ namespace IntechCode.Tests
         [TestCase(10928)]
         [TestCase(365)]
         [TestCase(0)] // No seed!
-        public void ContainsKey_in_a_dictionary( int seed )
+        public void ContainsKey_in_a_dictionary(int seed)
         {
             // Arrange
-            var r = seed == 0 ? new Random() : new Random( seed );
-            MyList<int> keys = CreateRandomListOfUniqueNumber(r, r.Next(30) );
+            var r = seed == 0 ? new Random() : new Random(seed);
+            MyList<int> keys = CreateRandomListOfUniqueNumber(r, r.Next(30));
             var sut = new MyDictionary<int, string>();
             // Act: adds unique numbers to the sut.
             foreach (var num in keys)
@@ -104,7 +104,7 @@ namespace IntechCode.Tests
                 sut.ContainsKey(num).Should().BeTrue();
             }
             // Check that ContainsKey can also return false!
-            for( var i = 0; i < 300; i++ )
+            for (var i = 0; i < 300; i++)
             {
                 var n = r.Next();
                 sut.ContainsKey(n).Should().Be(keys.IndexOf(n) >= 0);
@@ -157,6 +157,16 @@ namespace IntechCode.Tests
 
             d.Count.Should().Be(4);
         }
+        class User
+        {
+            public string Name { get; set; }
+            public string FirstName { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                User u = obj as User;
+                if (u == null) return false;
+                return u.Name == Name;
             }
 
             public override int GetHashCode() => Name != null ? Name.GetHashCode() : 0;

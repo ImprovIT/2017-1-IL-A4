@@ -24,7 +24,7 @@ namespace IntechCode.IntechCollection
         readonly Func<TKey, TKey, bool> _equality;
         readonly Func<TKey, int> _hash;
 
-        public MyDictionary(Func<TKey, TKey, bool> equality = null)
+        public MyDictionary(Func<TKey, TKey, bool> equality = null, Func<TKey, int> hash = null)
         {
             _equality = equality ?? EqualityComparer<TKey>.Default.Equals;
             _hash = hash ?? EqualityComparer<TKey>.Default.GetHashCode;
