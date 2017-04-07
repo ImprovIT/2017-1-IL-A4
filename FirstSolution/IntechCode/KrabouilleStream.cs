@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -19,6 +20,7 @@ namespace IntechCode
         readonly KrabouilleMode _mode;
         int _pos;
         byte[] _s;
+        Random _r;
 
         public KrabouilleStream( Stream inner, string password, KrabouilleMode mode )
         {
@@ -30,6 +32,7 @@ namespace IntechCode
             _inner = inner;
             var k = new Rfc2898DeriveBytes(password, new byte[] { 98, 123, 87, 2, 87, 2, 87, 2, 23, 1, 32 });
             _s = k.GetBytes(20);
+            _r = new Random(_s.Select(i => i+1).Sum());
         }
 
         public override bool CanRead => _inner.CanRead;
@@ -56,6 +59,7 @@ namespace IntechCode
             for (int i = offset; i < offset+count; ++i )
             {
                 buffer[i] ^= _s[_pos % _s.Length];
+                buffer[i] ^= (byte)_r.Next(255);
                 ++_pos;
             }
             return lenRead;
@@ -66,6 +70,7 @@ namespace IntechCode
             for (int i = offset; i < offset + count; ++i)
             {
                 buffer[i] ^= _s[_pos % _s.Length];
+                buffer[i] ^= (byte)_r.Next(255);
                 ++_pos;
             }
             _inner.Write(buffer, offset, count);
